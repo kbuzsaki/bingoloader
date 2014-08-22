@@ -71,6 +71,7 @@ class Race:
     def writeToCsv(self, csv):
         csv.writerow(["race id", self.raceid])
         csv.writerow(["bingo seed", self.board.seed])
+        csv.writerow(["bingo version", self.board.version])
         csv.writerow(["date: ", self.date])
         csv.writerow([]) 
         csv.writerow(["goals"])
