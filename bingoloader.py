@@ -1,7 +1,6 @@
 import csv
 import json
 import os
-import pickle
 import re
 import traceback
 import urllib.request
@@ -124,7 +123,7 @@ NUM_THREADS = 16
 # the first "race index" to load. increase this to load fewer old races
 DEFAULT_START = 9000
 # this file keeps track of the last loaded race number. you can delete it to force a refresh
-STORE_FILE = "lastloaded.p"
+STORE_FILE = "lastloaded.txt"
 # this file is where the program will output the data for newly loaded races
 OUT_FILE = "out.csv"
 
@@ -133,9 +132,11 @@ if __name__ == "__main__":
     try:
         # figure out the last race loaded, or use the default
         if os.path.isfile(STORE_FILE):
-            with open(STORE_FILE, "rb") as storeFile:
-                lastIndex = pickle.load(storeFile)
+            with open(STORE_FILE, "r") as storeFile:
+                lastIndex = int(storeFile.readline())
+                print("loaded last index: " + str(lastIndex))
         else:
+            print("no lastloaded.txt found, using default: " + str(DEFAULT_START))
             lastIndex = DEFAULT_START
 
         # load all of the race data since then
@@ -169,8 +170,8 @@ if __name__ == "__main__":
 
             # record the last race we loaded
             lastIndex += numLoaded
-            with open(STORE_FILE, "wb") as storeFile:
-                pickle.dump(lastIndex, storeFile)
+            with open(STORE_FILE, "w") as storeFile:
+                storeFile.write(str(lastIndex) + "\n")
 
     except Exception as e:
         print("oops, looks like there was an error:")
