@@ -143,34 +143,34 @@ if __name__ == "__main__":
         raceJsons = getRaceJsonsSince(lastIndex)
         numLoaded = len(raceJsons)
 
+        # only do more processing if new bingos were loaded
         if numLoaded == 0:
             print("no new races")
-            exit()
+        else:
+            # get rid of non-bingo races
+            bingoJsons = filterNonBingos(raceJsons)
+            numBingos = len(bingoJsons)
 
-        # get rid of non-bingo races
-        bingoJsons = filterNonBingos(raceJsons)
-        numBingos = len(bingoJsons)
+            print("loaded " + str(numLoaded) + " races, including " + str(numBingos) + " bingos")
 
-        print("loaded " + str(numLoaded) + " races, including " + str(numBingos) + " bingos")
+            # load all of the new race data
+            # uses multiple threads to speed up loading all of the bingo boards
+            print("parsing race data using " + str(NUM_THREADS) + " threads")
+            threadPool = Pool(NUM_THREADS)
+            races = threadPool.map(Race, bingoJsons)
 
-        # load all of the new race data
-        # uses multiple threads to speed up loading all of the bingo boards
-        print("parsing race data using " + str(NUM_THREADS) + " threads")
-        threadPool = Pool(NUM_THREADS)
-        races = threadPool.map(Race, bingoJsons)
+            # append new race stuff to the spreadsheet
+            print("writing race data to " + OUT_FILE)
+            with open(OUT_FILE, "a") as outfile:
+                writer = csv.writer(outfile)
+                for race in races:
+                    race.writeToCsv(writer)
+                    writer.writerow([])
 
-        # append new race stuff to the spreadsheet
-        print("writing race data to " + OUT_FILE)
-        with open(OUT_FILE, "a") as outfile:
-            writer = csv.writer(outfile)
-            for race in races:
-                race.writeToCsv(writer)
-                writer.writerow([])
-
-        # record the last race we loaded
-        lastIndex += numLoaded
-        with open(STORE_FILE, "wb") as storeFile:
-            pickle.dump(lastIndex, storeFile)
+            # record the last race we loaded
+            lastIndex += numLoaded
+            with open(STORE_FILE, "wb") as storeFile:
+                pickle.dump(lastIndex, storeFile)
 
     except Exception as e:
         print("oops, looks like there was an error:")
