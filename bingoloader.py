@@ -66,7 +66,7 @@ class Race:
         self.goal = raceJson["goal"]
         self.seed = getBingoSeed(self.goal)
         self.board = Board(getBingoBoardJson(self.seed))
-        self.results = [Result(resultJson) for resultJson in raceJson["results"]]
+        self.results = [Result(resultJson, self.board) for resultJson in raceJson["results"]]
 
     def writeToCsv(self, csv):
         csv.writerow(["race id", self.raceid])
@@ -74,19 +74,19 @@ class Race:
         csv.writerow(["date: ", self.date])
         csv.writerow([]) 
         csv.writerow(["goals"])
-        for row in range(len(self.board.goals) // 5):
-            csv.writerow(self.board.goals[row*5:row*5+5])
+        for goalsRow in self.board.goalsGrid:
+            csv.writerow(goalsRow)
         csv.writerow([])
         csv.writerow(["results"])
-        for rank, res in enumerate(self.results):
-            csv.writerow([rank + 1, res.player, res.time, res.elo, res.row, res.message])
+        for rank, result in enumerate(self.results):
+            csv.writerow([rank + 1] + result.getInfo())
 
 ROW_REGEX = re.compile(".*(r|c|row|col|column)\s*([1-5])", re.IGNORECASE)
 BLTR_REGEX = re.compile(".*bl(-|\s)?tr", re.IGNORECASE)
 TLBR_REGEX = re.compile(".*tl(-|\s)?br", re.IGNORECASE)
 
 class Result:
-    def __init__(self, resultJson):
+    def __init__(self, resultJson, board):
         self.player = resultJson["player"]
         sec = resultJson["time"]
         self.time = timedelta(seconds=sec) if sec > 0 else "forfeit"
@@ -107,13 +107,33 @@ class Result:
             self.row = "TL-BR"
         else:
             self.row = "This should never happen"
+        self.goals = board.getGoalsFromRowString(self.row)
+
+    def getInfo(self):
+        return [self.player, self.time, self.elo, self.row, self.message] + self.goals
 
 
 class Board:
     def __init__(self, boardJson):
         self.seed = int(boardJson["seed"])
         self.version = boardJson["version"]
-        self.goals = boardJson["goals"]
+        self.goalsList = boardJson["goals"]
+        self.goalsGrid = [self.goalsList[row*5:row*5+5] for row in range(5)]
+
+    def getGoalsFromRowString(self, rowString):
+        if "ROW" in rowString:
+            rowIndex = int(rowString[-1]) - 1
+            return self.goalsGrid[rowIndex]
+        elif "COL" in rowString:
+            colIndex = int(rowString[-1]) - 1
+            return [self.goalsGrid[row][colIndex] for row in range(5)]
+        elif rowString == "TL-BR":
+            return [self.goalsGrid[index][index] for index in range(5)]
+        elif rowString == "BL-TR":
+            return [self.goalsGrid[4 - col][col] for col in range(5)]
+        else:
+            return []
+            
 
 # concurrency settings for loads
 # you can change this to tune loading performance
