@@ -162,7 +162,7 @@ if __name__ == "__main__":
 
             # append new race stuff to the spreadsheet
             print("writing race data to " + OUT_FILE)
-            with open(OUT_FILE, "a") as outfile:
+            with open(OUT_FILE, "ab") as outfile:
                 writer = csv.writer(outfile)
                 for race in races:
                     race.writeToCsv(writer)
