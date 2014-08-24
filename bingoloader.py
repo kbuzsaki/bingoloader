@@ -8,18 +8,34 @@ from collections import Iterable
 from datetime import datetime, date, timedelta   
 from multiprocessing import Pool
 
+SRL_URL = "http://www.speedrunslive.com/"
 SRL_API_URL = "http://api.speedrunslive.com/"
 RACES_URL = SRL_API_URL + "/pastraces?game=oot"
+BOARD_URL = "http://giuocob.herokuapp.com/bingo/all-version-bingo.html"
 BOARD_API_URL = "http://giuocob.herokuapp.com/api/bingo/card"
+
+def getRaceUrl(raceId):
+    return SRL_URL + "races/result/#!/" + str(raceId)
+
+def getBingoJsonUrl(seed, version=None):
+    boardUrl = BOARD_API_URL + "?seed=" + str(seed) 
+    if version:
+        boardUrl += "&version=" + version
+    return boardUrl
+
+def getBingoUrl(seed, version=None):
+    boardUrl = BOARD_URL + "?seed=" + str(seed) 
+    if version:
+        boardUrl += "&version=" + version
+    return boardUrl
 
 def loadJsonFromUrl(url):
     jsonFile = urllib.request.urlopen(url)
     jsonDict = json.loads(jsonFile.read().decode())
     return jsonDict            
 
-def getBingoBoardJson(seed):
-    boardUrl = BOARD_API_URL + "?seed=" + str(seed)
-    return loadJsonFromUrl(boardUrl)
+def getBingoBoardJson(seed, version=None):
+    return loadJsonFromUrl(getBingoJsonUrl(seed, version))
 
 def getRaceJson(raceIndex):
     raceUrl = RACES_URL + "&pageSize=1&page=" + str(raceIndex)
@@ -90,9 +106,17 @@ class Race:
         self.board = Board(getBingoBoardJson(self.seed, self.version))
         self.results = [Result(resultJson, self.board) for resultJson in raceJson["results"]]
 
+    @property
+    def raceUrl(self):
+        return getRaceUrl(self.raceid)
+
+    @property
+    def bingoUrl(self):
+        return getBingoUrl(self.seed, self.version)
+
     def writeToCsv(self, csv):
-        csv.writerow(["race id", self.raceid])
-        csv.writerow(["bingo seed", self.board.seed])
+        csv.writerow(["race id", self.raceid, self.raceUrl])
+        csv.writerow(["bingo seed", self.board.seed, self.bingoUrl])
         csv.writerow(["bingo version", self.board.version])
         csv.writerow(["date: ", self.date])
         csv.writerow([]) 
