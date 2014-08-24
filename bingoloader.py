@@ -5,7 +5,7 @@ import re
 import traceback
 import urllib.request
 from collections import Iterable
-from datetime import datetime, timedelta   
+from datetime import datetime, date, timedelta   
 from multiprocessing import Pool
 
 SRL_API_URL = "http://api.speedrunslive.com/"
@@ -59,13 +59,35 @@ def getBingoSeed(goal):
     if result:
         return result.group(1)
 
+V8_DATE = datetime(2013, 9, 11)   # this is correct
+V8_1_DATE = datetime(2013, 9, 11) # unknown
+V8_2_DATE = datetime(2014, 9, 11) # unknown
+V8_3_DATE = datetime(2014, 8, 21) # this is correct
+
+# this is how we decide 
+def getBingoVersionAt(raceDate):
+    if raceDate > V8_3_DATE:
+        # giuocob's site doesn't support v8.3 yet
+        return None
+    elif raceDate > V8_2_DATE:
+        return "v8.2"
+    elif raceDate > V8_1_DATE:
+        return "v8.1"
+    elif raceDate > V8_DATE:
+        return "v8"
+    else:
+        print("could not find explicit bingo version for date: " + str(raceDate))
+        # return None here defaults to the most recent version
+        return None
+
 class Race:
     def __init__(self, raceJson):
         self.raceid = raceJson["id"]
         self.date = datetime.fromtimestamp(float(raceJson["date"]))
         self.goal = raceJson["goal"]
         self.seed = getBingoSeed(self.goal)
-        self.board = Board(getBingoBoardJson(self.seed))
+        self.version = getBingoVersionAt(self.date)
+        self.board = Board(getBingoBoardJson(self.seed, self.version))
         self.results = [Result(resultJson, self.board) for resultJson in raceJson["results"]]
 
     def writeToCsv(self, csv):
