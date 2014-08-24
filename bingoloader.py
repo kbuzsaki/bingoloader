@@ -119,10 +119,11 @@ class Race:
         return getBingoUrl(self.seed, self.version)
 
     def writeToCsv(self, csv):
-        csv.writerow(["race id", self.raceid, self.raceUrl])
-        csv.writerow(["bingo seed", self.board.seed, self.bingoUrl])
-        csv.writerow(["bingo version", self.board.version])
+        csv.writerow(["race id: ", self.raceid, self.raceUrl])
+        csv.writerow(["bingo seed: ", self.board.seed, self.bingoUrl])
+        csv.writerow(["bingo version: ", self.board.version])
         csv.writerow(["date: ", self.date])
+        csv.writerow(["goal: ", self.goal])
         csv.writerow([]) 
         csv.writerow(["goals"])
         for goalsRow in self.board.goalsGrid:
