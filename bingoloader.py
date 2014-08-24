@@ -68,7 +68,11 @@ BINGO_SEED_REGEX = re.compile("\?.*seed=([0-9]+)")
 
 def isBingoGoal(goal):
     goal = goal.lower()
-    return IS_BINGO_REGEX.match(goal) and "short" not in goal and "blackout" not in goal
+    isBingo = IS_BINGO_REGEX.match(goal)
+    short = "short" in goal
+    blackout = "blackout" in goal
+    double = "double" in goal or "anti" in goal
+    return isBingo and not short and not blackout and not double
 
 def getBingoSeed(goal):
     result = BINGO_SEED_REGEX.search(goal)
