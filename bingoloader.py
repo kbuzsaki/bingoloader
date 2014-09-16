@@ -81,16 +81,15 @@ def getBingoSeed(goal):
     if result:
         return result.group(1)
 
-V8_DATE = datetime(2013, 9, 11)   # this is correct
-V8_1_DATE = datetime(2013, 9, 11) # unknown
-V8_2_DATE = datetime(2014, 9, 11) # unknown
-V8_3_DATE = datetime(2014, 8, 21) # this is correct
+# The dates at which different bingo versions were released
+V8_DATE = datetime(2013, 9, 11)  
+V8_1_DATE = datetime(2013, 12, 12) 
+V8_2_DATE = datetime(2014, 6, 13)
+V8_3_DATE = datetime(2014, 8, 21) 
 
-# this is how we decide 
 def getBingoVersionAt(raceDate):
     if raceDate > V8_3_DATE:
-        # giuocob's site doesn't support v8.3 yet
-        return None
+        return "v8.3"
     elif raceDate > V8_2_DATE:
         return "v8.2"
     elif raceDate > V8_1_DATE:
