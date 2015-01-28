@@ -86,7 +86,7 @@ V8_DATE = datetime(2013, 9, 11)
 V8_1_DATE = datetime(2013, 12, 12) 
 V8_2_DATE = datetime(2014, 6, 13)
 V8_3_DATE = datetime(2014, 8, 21) 
-V8_4_DATE = datetime(2014, 12, 11) 
+V8_4_DATE = datetime(2014, 12, 13) 
 
 def getBingoVersionAt(raceDate):
     if raceDate > V8_4_DATE:
