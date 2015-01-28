@@ -13,8 +13,8 @@ from multiprocessing import Pool
 SRL_URL = "http://www.speedrunslive.com/"
 SRL_API_URL = "http://api.speedrunslive.com/"
 RACES_URL = SRL_API_URL + "/pastraces?game=oot"
-BOARD_URL = "http://giuocob.herokuapp.com/bingo/all-version-bingo.html"
-BOARD_API_URL = "http://giuocob.herokuapp.com/api/bingo/card"
+BOARD_URL = "http://giuocob.com/bingo/all-version-bingo.html"
+BOARD_API_URL = "http://giuocob.com/api/bingo/card"
 
 def getRaceUrl(raceId):
     return SRL_URL + "races/result/#!/" + str(raceId)
