@@ -231,10 +231,15 @@ if __name__ == "__main__":
             print("loaded " + str(numLoaded) + " races, including " + str(numBingos) + " bingos")
 
             # load all of the new race data
-            # uses multiple threads to speed up loading all of the bingo boards
-            print("parsing race data using " + str(NUM_THREADS) + " threads")
-            threadPool = Pool(NUM_THREADS)
-            races = threadPool.map(Race, bingoJsons)
+            if NUM_THREADS > 1:
+                # uses multiple threads to speed up loading all of the bingo boards
+                print("parsing race data using " + str(NUM_THREADS) + " threads")
+                threadPool = Pool(NUM_THREADS)
+                races = threadPool.map(Race, bingoJsons)
+            else:
+                # slower because single threaded
+                # however, makes the stack trace easier to follow
+                races = [Race(bingoJson) for bingoJson in bingoJsons]
 
             # append new race stuff to the spreadsheet
             print("writing race data to " + OUT_FILE)
