@@ -13,6 +13,7 @@ from multiprocessing import Pool
 SRL_URL = "http://www.speedrunslive.com/"
 SRL_API_URL = "http://api.speedrunslive.com/"
 RACES_URL = SRL_API_URL + "/pastraces?game=oot"
+SRL_BOARD_URL = SRL_URL + "tools/oot-bingo/"
 # temporarily removed from api
 #BOARD_URL = "http://giuocob.com/bingo/all-version-bingo.html"
 BOARD_API_URL = "http://api.giuocob.com/api/bingo/legacy/card"
@@ -28,7 +29,6 @@ def getBingoJsonUrl(seed, version=None):
 
 # temporarily removed from api
 def getBingoUrl(seed, version=None):
-    raise Exception("Full boards have been removed from the api")
     boardUrl = BOARD_URL + "?seed=" + str(seed) 
     if version:
         boardUrl += "&version=" + version
@@ -95,13 +95,14 @@ BINGO_VERSIONS = [
  (datetime(2013, 9, 11),  "v8")
 ]
 
+CURRENT_VERSION = BINGO_VERSIONS[0][1]
+
 def getBingoVersionAt(raceDate):
     for versionDate, version in BINGO_VERSIONS:
         if raceDate > versionDate:
             return version
     print("could not find explicit bingo version for date: " + str(raceDate))
-    # return None here defaults to the most recent version
-    return None
+    return CURRENT_VERSION
 
 class Race:
     def __init__(self, raceJson):
@@ -119,7 +120,10 @@ class Race:
 
     @property
     def bingoUrl(self):
-        return "All version boards have been temporarily removed from the api."
+        if self.version == CURRENT_VERSION:
+            return SRL_BOARD_URL + "?seed=" + str(self.seed)
+        else:
+            return "Legacy Bingo urls have been temporarily removed from the api."
         return getBingoUrl(self.seed, self.version)
 
     def writeToCsv(self, csv):
