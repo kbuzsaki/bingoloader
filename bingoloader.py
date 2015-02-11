@@ -13,8 +13,9 @@ from multiprocessing import Pool
 SRL_URL = "http://www.speedrunslive.com/"
 SRL_API_URL = "http://api.speedrunslive.com/"
 RACES_URL = SRL_API_URL + "/pastraces?game=oot"
-BOARD_URL = "http://giuocob.com/bingo/all-version-bingo.html"
-BOARD_API_URL = "http://giuocob.com/api/bingo/card"
+# temporarily removed from api
+#BOARD_URL = "http://giuocob.com/bingo/all-version-bingo.html"
+BOARD_API_URL = "http://api.giuocob.com/api/bingo/legacy/card"
 
 def getRaceUrl(raceId):
     return SRL_URL + "races/result/#!/" + str(raceId)
@@ -25,7 +26,9 @@ def getBingoJsonUrl(seed, version=None):
         boardUrl += "&version=" + version
     return boardUrl
 
+# temporarily removed from api
 def getBingoUrl(seed, version=None):
+    raise Exception("Full boards have been removed from the api")
     boardUrl = BOARD_URL + "?seed=" + str(seed) 
     if version:
         boardUrl += "&version=" + version
@@ -120,6 +123,7 @@ class Race:
 
     @property
     def bingoUrl(self):
+        return "All version boards have been temporarily removed from the api."
         return getBingoUrl(self.seed, self.version)
 
     def writeToCsv(self, csv):
@@ -173,7 +177,7 @@ class Board:
     def __init__(self, boardJson):
         self.seed = int(boardJson["seed"])
         self.version = boardJson["version"]
-        self.goalsList = boardJson["goals"]
+        self.goalsList = [goalJson["name"] for goalJson in boardJson["goals"]]
         self.goalsGrid = [self.goalsList[row*5:row*5+5] for row in range(5)]
 
     def getGoalsFromRowString(self, rowString):
