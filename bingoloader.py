@@ -85,27 +85,23 @@ def getBingoSeed(goal):
         return result.group(1)
 
 # The dates at which different bingo versions were released
-V8_DATE = datetime(2013, 9, 11)  
-V8_1_DATE = datetime(2013, 12, 12) 
-V8_2_DATE = datetime(2014, 6, 13)
-V8_3_DATE = datetime(2014, 8, 21) 
-V8_4_DATE = datetime(2014, 12, 13) 
+# You can add a new version here if you like, just follow the format
+# Add more recent versions to the beginninf of the list
+BINGO_VERSIONS = [
+ (datetime(2014, 12, 13), "v8.4"),
+ (datetime(2014, 8, 21),  "v8.3"), 
+ (datetime(2014, 6, 13),  "v8.2"),
+ (datetime(2013, 12, 12), "v8.1"), 
+ (datetime(2013, 9, 11),  "v8")
+]
 
 def getBingoVersionAt(raceDate):
-    if raceDate > V8_4_DATE:
-        return "v8.4"
-    elif raceDate > V8_3_DATE:
-        return "v8.3"
-    elif raceDate > V8_2_DATE:
-        return "v8.2"
-    elif raceDate > V8_1_DATE:
-        return "v8.1"
-    elif raceDate > V8_DATE:
-        return "v8"
-    else:
-        print("could not find explicit bingo version for date: " + str(raceDate))
-        # return None here defaults to the most recent version
-        return None
+    for versionDate, version in BINGO_VERSIONS:
+        if raceDate > versionDate:
+            return version
+    print("could not find explicit bingo version for date: " + str(raceDate))
+    # return None here defaults to the most recent version
+    return None
 
 class Race:
     def __init__(self, raceJson):
