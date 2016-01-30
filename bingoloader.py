@@ -7,7 +7,7 @@ import re
 import traceback
 import urllib.request
 from collections import Iterable
-from datetime import datetime, date, timedelta   
+from datetime import datetime, date, timedelta
 from multiprocessing import Pool
 
 SRL_URL = "http://www.speedrunslive.com/"
@@ -22,14 +22,14 @@ def getRaceUrl(raceId):
     return SRL_URL + "races/result/#!/" + str(raceId)
 
 def getBingoJsonUrl(seed, version=None):
-    boardUrl = BOARD_API_URL + "?seed=" + str(seed) 
+    boardUrl = BOARD_API_URL + "?seed=" + str(seed)
     if version:
         boardUrl += "&version=" + version
     return boardUrl
 
 # temporarily removed from api
 def getBingoUrl(seed, version=None):
-    boardUrl = BOARD_URL + "?seed=" + str(seed) 
+    boardUrl = BOARD_URL + "?seed=" + str(seed)
     if version:
         boardUrl += "&version=" + version
     return boardUrl
@@ -37,7 +37,7 @@ def getBingoUrl(seed, version=None):
 def loadJsonFromUrl(url):
     jsonFile = urllib.request.urlopen(url)
     jsonDict = json.loads(jsonFile.read().decode())
-    return jsonDict            
+    return jsonDict
 
 def getBingoBoardJson(seed, version=None):
     return loadJsonFromUrl(getBingoJsonUrl(seed, version))
@@ -89,9 +89,9 @@ def getBingoSeed(goal):
 # Add more recent versions to the beginninf of the list
 BINGO_VERSIONS = [
  (datetime(2014, 12, 13), "v8.4"),
- (datetime(2014, 8, 21),  "v8.3"), 
+ (datetime(2014, 8, 21),  "v8.3"),
  (datetime(2014, 6, 13),  "v8.2"),
- (datetime(2013, 12, 12), "v8.1"), 
+ (datetime(2013, 12, 12), "v8.1"),
  (datetime(2013, 9, 11),  "v8")
 ]
 
@@ -132,7 +132,7 @@ class Race:
         csv.writerow(["bingo version: ", self.board.version])
         csv.writerow(["date: ", self.date])
         csv.writerow(["goal: ", self.goal])
-        csv.writerow([]) 
+        csv.writerow([])
         csv.writerow(["goals"])
         for goalsRow in self.board.goalsGrid:
             csv.writerow(goalsRow)
@@ -193,7 +193,7 @@ class Board:
             return [self.goalsGrid[4 - col][col] for col in range(5)]
         else:
             return []
-            
+
 
 # concurrency settings for loads
 # you can change this to tune loading performance
