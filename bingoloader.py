@@ -16,7 +16,7 @@ RACES_URL = SRL_API_URL + "/pastraces?game=oot"
 SRL_BOARD_URL = SRL_URL + "tools/oot-bingo/"
 # temporarily removed from api
 #BOARD_URL = "http://giuocob.com/bingo/all-version-bingo.html"
-BOARD_API_URL = "http://api.giuocob.com/api/bingo/legacy/card"
+BOARD_API_URL = "http://legacybingo.bingosync.com/api/bingo/legacy/card"
 
 def getRaceUrl(raceId):
     return SRL_URL + "races/result/#!/" + str(raceId)
