@@ -88,6 +88,7 @@ def getBingoSeed(goal):
 # You can add a new version here if you like, just follow the format
 # Add more recent versions to the beginninf of the list
 BINGO_VERSIONS = [
+ (datetime(2016, 1, 29),  "v8.5"),
  (datetime(2014, 12, 13), "v8.4"),
  (datetime(2014, 8, 21),  "v8.3"),
  (datetime(2014, 6, 13),  "v8.2"),
