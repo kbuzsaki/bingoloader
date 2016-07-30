@@ -204,7 +204,7 @@ NUM_THREADS = 16
 
 # other settings
 # the first "race index" to load. increase this to load fewer old races
-DEFAULT_START = 11000
+DEFAULT_START = 12000
 # this file keeps track of the last loaded race number. you can delete it to force a refresh
 STORE_FILE = "lastloaded.txt"
 # this file is where the program will output the data for newly loaded races
