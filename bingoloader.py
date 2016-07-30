@@ -68,7 +68,7 @@ def getRaceJsonsSince(beginIndex):
 def filterNonBingos(raceJsons):
     return [raceJson for raceJson in raceJsons if isBingoGoal(raceJson["goal"])]
 
-IS_BINGO_REGEX = re.compile(".*speedrunslive.com/tools/oot-bingo/\?.*seed=[0-9]+")
+IS_BINGO_REGEX = re.compile(".*speedrunslive.com/tools/oot-bingo.*")
 BINGO_SEED_REGEX = re.compile("\?.*seed=([0-9]+)")
 
 def isBingoGoal(goal):
