@@ -6,7 +6,7 @@ import os
 import re
 import traceback
 import urllib.request
-from collections import Iterable
+from collections import Iterable, Counter
 from datetime import datetime, date, timedelta
 from multiprocessing import Pool
 
@@ -235,7 +235,12 @@ if __name__ == "__main__":
             bingoJsons = filterNonBingos(raceJsons)
             numBingos = len(bingoJsons)
 
+            dates = [datetime.fromtimestamp(float(race["date"])) for race in bingoJsons]
+            versionCounts = Counter(getBingoVersionAt(date) for date in dates)
             print("loaded " + str(numLoaded) + " races, including " + str(numBingos) + " bingos")
+            print("version breakdown:")
+            for version, count in sorted(versionCounts.items()):
+                print(version + ":", count)
 
             # load all of the new race data
             if NUM_THREADS > 1:
